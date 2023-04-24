@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glory-deploy
+  labels:
+    name: Glory-Web1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web1
+  template:
+    metadata:
+      labels:
+        app: web1
+    spec:
+      containers:
+        - name: glory-pod
+          image: khm9780/test_1:6.0
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: glory1-volume
+              mountPath: /var/log/httpd
+      nodeSelector:
+        name: glory1
+        
+      volumes:
+        - name: glory1-volume
+          hostPath:
+            path: /glory1-Log
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: glory-svc1
+spec: 
+  type: ClusterIP
+  selector:
+    app: web1
+  ports: 
+    - port: 8080
+      targetPort: 80      
